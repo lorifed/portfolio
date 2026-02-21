@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lorenzo Federoni</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#04080f;
+  --s:#070d1a;
+  --b:#0d1e33;
+  --b2:#152840;
+  --acc:#2a6fd4;
+  --acc2:#4d8fff;
+  --acc3:#8ab4ff;
+  --t:#a8bdd8;
+  --tm:#3a5270;
+  --w:#e8f0fc;
+  --ww:#f4f8ff;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--t);
+  font-family:'DM Sans',sans-serif;
+  font-weight:300;
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* CURSOR */
+#cur{width:5px;height:5px;background:var(--acc2);border-radius:50%;position:fixed;z-index:9999;pointer-events:none;transform:translate(-50%,-50%);transition:transform .15s,width .2s,height .2s}
+#cur-r{width:28px;height:28px;border:1px solid rgba(77,143,255,.25);border-radius:50%;position:fixed;z-index:9998;pointer-events:none;transform:translate(-50%,-50%);transition:border-color .3s}
+body.h #cur{width:12px;height:12px}
+body.h #cur-r{border-color:rgba(77,143,255,.6);transform:translate(-50%,-50%) scale(1.5)}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:28px 52px;
+  transition:background .4s,border-color .4s;
+  border-bottom:1px solid transparent;
+}
+nav.s{background:rgba(4,8,15,.94);backdrop-filter:blur(16px);border-color:var(--b)}
+.logo{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.22em;color:var(--acc2);text-decoration:none;text-transform:uppercase}
+.nav-l{display:flex;gap:44px;list-style:none}
+.nav-l a{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--tm);text-decoration:none;transition:color .25s;position:relative}
+.nav-l a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--acc2);transition:width .3s}
+.nav-l a:hover{color:var(--acc3)}
+.nav-l a:hover::after{width:100%}
+.nav-dot{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;color:var(--tm)}
+.dot{width:5px;height:5px;background:#22d36a;border-radius:50%;animation:bl 2s infinite}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* ===== HERO ===== */
+.hero{
+  height:100vh;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  position:relative;
+  overflow:hidden;
+}
+
+/* Left — text */
+.hero-left{
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:0 52px 80px;
+  position:relative;z-index:2;
+}
+.hero-tag{
+  font-family:'DM Mono',monospace;font-size:9px;
+  letter-spacing:.25em;text-transform:uppercase;
+  color:var(--acc2);margin-bottom:32px;
+  display:flex;align-items:center;gap:14px;
+  opacity:0;animation:up .7s ease .1s forwards;
+}
+.tag-line{width:28px;height:1px;background:var(--acc)}
+.hero-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(64px,8vw,120px);
+  font-weight:300;line-height:.9;
+  color:var(--ww);letter-spacing:-.02em;
+  margin-bottom:48px;
+}
+.hero-name .ln{display:block;overflow:hidden}
+.hero-name .ln span{display:block;opacity:0;transform:translateY(100%)}
+.hero-name .ln:nth-child(1) span{animation:su .9s cubic-bezier(.16,1,.3,1) .2s forwards}
+.hero-name .ln:nth-child(2) span{animation:su .9s cubic-bezier(.16,1,.3,1) .35s forwards;font-style:italic;color:var(--acc2)}
+.hero-sub{
+  font-size:13px;color:var(--tm);line-height:1.85;
+  max-width:320px;
+  border-left:1px solid var(--b2);padding-left:20px;
+  opacity:0;animation:up .8s ease .6s forwards;
+}
+.hero-sub strong{color:var(--t);font-weight:400}
+
+/* Right — photo */
+.hero-right{
+  position:relative;overflow:hidden;
+}
+.hero-photo{
+  width:100%;height:100%;
+  object-fit:cover;object-position:center top;
+  filter:grayscale(15%) brightness(.9);
+  transition:filter .6s;
+  opacity:0;animation:fadeIn .8s ease .3s forwards;
+}
+.hero-photo-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to right, var(--bg) 0%, transparent 30%),
+             linear-gradient(to top, var(--bg) 0%, transparent 25%);
+}
+
+/* Scroll hint */
+.hero-scroll{
+  position:absolute;bottom:40px;right:52px;z-index:3;
+  display:flex;align-items:center;gap:12px;
+  font-family:'DM Mono',monospace;font-size:9px;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:var(--tm);text-decoration:none;
+  opacity:0;animation:up .7s ease .8s forwards;
+  transition:color .3s;
+}
+.hero-scroll:hover{color:var(--acc2)}
+.scroll-arr{
+  width:40px;height:40px;border:1px solid var(--b2);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--acc2);font-size:14px;transition:all .3s;
+}
+.hero-scroll:hover .scroll-arr{border-color:var(--acc);box-shadow:0 0 16px rgba(42,111,212,.2)}
+
+@keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes su{from{opacity:0;transform:translateY(100%)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--b);border-bottom:1px solid var(--b)}
+.stat{
+  padding:36px 44px;border-right:1px solid var(--b);
+  position:relative;overflow:hidden;transition:background .3s;
+}
+.stat:last-child{border-right:none}
+.stat::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--acc2);transition:width .5s ease}
+.stat:hover::after{width:100%}
+.stat:hover{background:rgba(42,111,212,.03)}
+.stat-n{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;color:var(--ww);line-height:1;margin-bottom:8px}
+.stat-n em{font-style:normal;color:var(--acc2)}
+.stat-l{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--tm)}
+
+/* MARQUEE */
+.mq{overflow:hidden;background:var(--s);border-bottom:1px solid var(--b);padding:12px 0}
+.mq-t{display:flex;animation:mq 28s linear infinite;width:max-content}
+.mq-i{padding:0 32px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--tm);white-space:nowrap;display:flex;align-items:center;gap:32px}
+.mq-i::after{content:'·';color:var(--acc);font-size:16px}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* SECTIONS */
+.sec{padding:120px 52px}
+.sec-hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:80px;padding-bottom:20px;border-bottom:1px solid var(--b)}
+.sec-tag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--acc2);margin-bottom:10px}
+.sec-h{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,5vw,68px);font-weight:300;color:var(--ww);line-height:1.05}
+.sec-c{font-family:'DM Mono',monospace;font-size:10px;color:var(--tm)}
+
+/* WORK */
+.wgrid{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.wcard{
+  position:relative;overflow:hidden;background:var(--s);
+  aspect-ratio:4/3;display:flex;flex-direction:column;justify-content:flex-end;
+  padding:44px;text-decoration:none;color:inherit;
+}
+.wcard.wide{grid-column:1/-1;aspect-ratio:21/9}
+.wcard::before{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(to top,rgba(4,8,15,.95) 0%,rgba(4,8,15,.4) 50%,rgba(4,8,15,.05) 100%);transition:opacity .4s}
+.wcard-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .8s cubic-bezier(.16,1,.3,1),filter .4s;filter:saturate(.6) brightness(.75)}
+.wcard:hover .wcard-bg{transform:scale(1.05);filter:saturate(.85) brightness(.9)}
+.wcard::after{content:'';position:absolute;inset:0;z-index:0;border:1px solid transparent;transition:border-color .4s}
+.wcard:hover::after{border-color:rgba(42,111,212,.25)}
+.wcard-body{position:relative;z-index:2;transform:translateY(14px);transition:transform .5s cubic-bezier(.16,1,.3,1)}
+.wcard:hover .wcard-body{transform:translateY(0)}
+.wtag{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--acc2);margin-bottom:10px;display:block}
+.wt{font-family:'Cormorant Garamond',serif;font-size:clamp(22px,2.2vw,32px);font-weight:300;color:var(--ww);line-height:1.15;margin-bottom:10px}
+.wcard.wide .wt{font-size:clamp(28px,3.5vw,48px)}
+.wd{font-size:12px;color:var(--tm);max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.16,1,.3,1),opacity .4s;opacity:0;line-height:1.7}
+.wcard:hover .wd{max-height:80px;opacity:1}
+.warr{position:absolute;top:40px;right:40px;z-index:3;width:42px;height:42px;border:1px solid rgba(42,111,212,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--acc2);font-size:15px;opacity:0;transform:translateY(-6px) rotate(-45deg);transition:all .4s cubic-bezier(.16,1,.3,1)}
+.wcard:hover .warr{opacity:1;transform:translateY(0) rotate(0);border-color:var(--acc);box-shadow:0 0 14px rgba(42,111,212,.2)}
+
+/* SKILLS */
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr)}
+.sk{padding:48px 40px;border:1px solid var(--b);margin:-1px 0 0 -1px;position:relative;overflow:hidden;transition:background .3s}
+.sk::before{content:'';position:absolute;top:0;left:0;width:100%;height:0;background:linear-gradient(to bottom,rgba(42,111,212,.04),transparent);transition:height .5s}
+.sk:hover::before{height:100%}
+.sk::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:var(--acc2);transition:width .5s}
+.sk:hover::after{width:100%}
+.sk-n{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--ww);margin-bottom:12px;font-weight:400}
+.sk-num{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.15em;color:var(--acc);margin-bottom:20px;display:block}
+.sk-d{font-size:12px;color:var(--tm);line-height:1.8}
+.sk-tools{margin-top:20px;display:flex;flex-wrap:wrap;gap:7px}
+.sk-t{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);border:1px solid var(--b);padding:4px 9px;transition:all .3s}
+.sk:hover .sk-t{border-color:var(--b2);color:var(--acc3)}
+
+/* ABOUT */
+.about-g{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.ap{font-size:14px;color:var(--t);line-height:1.95;margin-bottom:22px}
+.ap:first-of-type{font-family:'Cormorant Garamond',serif;font-size:23px;color:var(--ww);line-height:1.5;font-weight:300}
+.ameta{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:44px}
+.am{background:var(--s);padding:24px;border:1px solid var(--b);transition:border-color .3s,background .3s}
+.am:hover{border-color:var(--b2);background:rgba(42,111,212,.03)}
+.aml{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--tm);margin-bottom:8px}
+.amv{font-size:13px;color:var(--t);line-height:1.6}
+
+/* Photo right col */
+.photo-col{}
+.pbox{
+  width:100%;aspect-ratio:3/4;overflow:hidden;
+  position:relative;border:1px solid var(--b);
+  transition:border-color .4s;
+}
+.pbox:hover{border-color:var(--b2)}
+.pbox img{width:100%;height:100%;object-fit:cover;object-position:center top;filter:grayscale(10%) brightness(.92);transition:transform .6s ease,filter .4s}
+.pbox:hover img{transform:scale(1.03);filter:grayscale(0%) brightness(1)}
+
+/* Case study */
+.cs{background:var(--s);border:1px solid var(--b);padding:40px;margin-top:2px;position:relative;transition:border-color .4s}
+.cs:hover{border-color:var(--b2)}
+.cs::before{content:'';position:absolute;left:0;top:0;width:2px;height:100%;background:var(--acc2);box-shadow:0 0 10px rgba(42,111,212,.3)}
+.csl{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--acc2);margin-bottom:28px}
+.cs-row{display:flex;align-items:baseline;gap:24px;margin-bottom:20px}
+.cs-b{font-family:'Cormorant Garamond',serif;font-size:44px;color:var(--tm);text-decoration:line-through;line-height:1}
+.cs-a{font-family:'Cormorant Garamond',serif;font-size:44px;color:var(--acc2);line-height:1;text-shadow:0 0 20px rgba(42,111,212,.25)}
+.cs-arr{color:var(--tm);font-size:18px;padding-bottom:14px}
+.bar-w{width:100%;height:2px;background:var(--b);overflow:hidden;margin-bottom:7px}
+.bar{width:21%;height:100%;background:var(--acc2);position:relative}
+.bar::after{content:'';position:absolute;right:0;top:-1px;width:4px;height:4px;background:var(--acc2);border-radius:50%;box-shadow:0 0 5px var(--acc)}
+.cs-pct{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.12em;color:var(--tm);margin-bottom:28px}
+.cs-mini{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;border-top:1px solid var(--b);padding-top:24px}
+.cs-mn{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--ww);font-weight:300}
+.cs-ml{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);margin-top:4px}
+
+/* CONTACT */
+.ct{background:var(--s);padding:120px 52px;text-align:center;border-top:1px solid var(--b);position:relative;overflow:hidden}
+.ct::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 50% 110%,rgba(42,111,212,.07) 0%,transparent 60%)}
+.ct-tag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--acc2);margin-bottom:28px;position:relative}
+.ct-h{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,8vw,104px);font-weight:300;color:var(--ww);line-height:.92;margin-bottom:40px;position:relative}
+.ct-h em{font-style:italic;color:var(--acc2);text-shadow:0 0 40px rgba(42,111,212,.25)}
+.ct-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--tm);margin-bottom:52px;position:relative}
+.btn{display:inline-flex;align-items:center;gap:18px;padding:18px 48px;border:1px solid var(--b2);color:var(--acc2);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;position:relative;overflow:hidden;transition:color .35s,border-color .35s}
+.btn::before{content:'';position:absolute;inset:0;background:var(--acc);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.16,1,.3,1)}
+.btn:hover{color:var(--ww);border-color:var(--acc);box-shadow:0 0 28px rgba(42,111,212,.2)}
+.btn:hover::before{transform:scaleX(1)}
+.btn span{position:relative;z-index:1}
+
+/* FOOTER */
+footer{padding:28px 52px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--b)}
+.fc{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--tm)}
+.fl{display:flex;gap:32px}
+.fl a{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--tm);text-decoration:none;transition:color .3s}
+.fl a:hover{color:var(--acc2)}
+
+/* REVEAL */
+.rv{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+.rv.on{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+
+/* NOISE */
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9997;opacity:.3}
+
+@media(max-width:900px){
+  nav{padding:20px 24px}
+  .nav-l,.nav-dot{display:none}
+  .hero{grid-template-columns:1fr;height:auto;min-height:100vh}
+  .hero-left{padding:120px 24px 60px}
+  .hero-right{height:60vw}
+  .hero-scroll{right:24px}
+  .sec{padding:80px 24px}
+  .stats{grid-template-columns:1fr 1fr}
+  .stat{border-right:none;border-bottom:1px solid var(--b)}
+  .wgrid{grid-template-columns:1fr}
+  .wcard.wide{aspect-ratio:4/3}
+  .sgrid{grid-template-columns:1fr}
+  .about-g{grid-template-columns:1fr;gap:48px}
+  .ct{padding:80px 24px}
+  footer{padding:24px;flex-direction:column;gap:16px;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-r"></div>
+
+<nav id="nav">
+  <a href="#" class="logo">LF</a>
+  <ul class="nav-l">
+    <li><a href="#work">Work</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-dot"><span class="dot"></span>Available for projects</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-tag"><span class="tag-line"></span>E-commerce Operator</div>
+    <h1 class="hero-name">
+      <span class="ln"><span>Lorenzo</span></span>
+      <span class="ln"><span>Federoni</span></span>
+    </h1>
+    <p class="hero-sub">
+      I <strong>build and grow e-commerce brands</strong> — Meta Ads, AI content, custom web development. Based in <strong>Italy</strong>, available worldwide.
+    </p>
+  </div>
+  <div class="hero-right">
+    <img class="hero-photo" src="photo.png" alt="Lorenzo Federoni">
+    <div class="hero-photo-overlay"></div>
+  </div>
+  <a href="#work" class="hero-scroll">
+    Work <span class="scroll-arr">↓</span>
+  </a>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat rv"><div class="stat-n">€<em>2.5</em></div><div class="stat-l">Cost per lead achieved</div></div>
+  <div class="stat rv d1"><div class="stat-n"><em>−79</em>%</div><div class="stat-l">Reduction in ad cost per lead</div></div>
+  <div class="stat rv d2"><div class="stat-n"><em>600</em>+</div><div class="stat-l">AI renders produced</div></div>
+  <div class="stat rv d3"><div class="stat-n"><em>2</em></div><div class="stat-l">Brands operated end-to-end</div></div>
+</div>
+
+<!-- MARQUEE -->
+<div class="mq">
+  <div class="mq-t">
+    <span class="mq-i">Meta Ads</span><span class="mq-i">WooCommerce</span><span class="mq-i">Shopify</span><span class="mq-i">AI Content</span><span class="mq-i">Google Tag Manager</span><span class="mq-i">E-commerce Strategy</span><span class="mq-i">Funnel Optimization</span><span class="mq-i">ComfyUI</span><span class="mq-i">WordPress</span><span class="mq-i">Paid Media</span>
+    <span class="mq-i">Meta Ads</span><span class="mq-i">WooCommerce</span><span class="mq-i">Shopify</span><span class="mq-i">AI Content</span><span class="mq-i">Google Tag Manager</span><span class="mq-i">E-commerce Strategy</span><span class="mq-i">Funnel Optimization</span><span class="mq-i">ComfyUI</span><span class="mq-i">WordPress</span><span class="mq-i">Paid Media</span>
+  </div>
+</div>
+
+<!-- WORK -->
+<section class="sec" id="work">
+  <div class="sec-hd rv"><div><p class="sec-tag">Selected Work</p><h2 class="sec-h">Projects</h2></div><span class="sec-c">02 / 02</span></div>
+  <div class="wgrid">
+    <a href="https://ikiventi.com" target="_blank" class="wcard wide rv">
+      <div class="wcard-bg" style="background:linear-gradient(135deg,#02060e 0%,#061222 50%,#02060e 100%)"></div>
+      <div class="warr">↗</div>
+      <div class="wcard-body">
+        <span class="wtag">E-commerce · Meta Ads · Web Dev · AI Content</span>
+        <h3 class="wt">IKIVENTI Design</h3>
+        <p class="wd">Full digital operation of an Italian modular furniture brand. Rebuilt the site from scratch, reduced cost-per-lead from €12 to €2.50, produced 600+ AI renders, implemented full GTM tracking.</p>
+      </div>
+    </a>
+    <a href="https://21studio.io" target="_blank" class="wcard rv d1">
+      <div class="wcard-bg" style="background:linear-gradient(160deg,#020408 0%,#050e1c 60%,#020408 100%)"></div>
+      <div class="warr">↗</div>
+      <div class="wcard-body">
+        <span class="wtag">AI Content · Fashion · Brand Identity</span>
+        <h3 class="wt">21STUDIO</h3>
+        <p class="wd">AI Art Direction studio for fashion brands. Photorealistic product photography, visual identity, motion content — no studio required.</p>
+      </div>
+    </a>
+    <div class="wcard rv d2" style="cursor:default">
+      <div class="wcard-bg" style="background:linear-gradient(160deg,#030508 0%,#070f1e 60%,#030508 100%)"></div>
+      <div class="wcard-body">
+        <span class="wtag">In Development · DTC Brand</span>
+        <h3 class="wt">Next Project</h3>
+        <p class="wd" style="opacity:1;max-height:60px">A new DTC e-commerce brand being built from zero — product, brand, tech, and paid media.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section class="sec" id="skills" style="background:var(--s);border-top:1px solid var(--b);border-bottom:1px solid var(--b)">
+  <div class="sec-hd rv"><div><p class="sec-tag">Capabilities</p><h2 class="sec-h">What I do</h2></div></div>
+  <div class="sgrid">
+    <div class="sk rv"><span class="sk-num">/ 01</span><h3 class="sk-n">Paid Advertising</h3><p class="sk-d">Meta Ads end-to-end — campaign architecture, creative testing, scaling. Proven 79% reduction in cost per lead.</p><div class="sk-tools"><span class="sk-t">Meta Ads</span><span class="sk-t">Facebook Business</span><span class="sk-t">A/B Testing</span></div></div>
+    <div class="sk rv d1"><span class="sk-num">/ 02</span><h3 class="sk-n">E-commerce Dev</h3><p class="sk-d">Custom builds on WooCommerce and Shopify — product pages, variation systems, checkout flows, full technical setup.</p><div class="sk-tools"><span class="sk-t">WooCommerce</span><span class="sk-t">Shopify</span><span class="sk-t">WordPress</span><span class="sk-t">JS / CSS</span></div></div>
+    <div class="sk rv d2"><span class="sk-num">/ 03</span><h3 class="sk-n">AI Content</h3><p class="sk-d">Photorealistic product renders and brand visuals using AI — eliminating studio costs while maintaining premium quality.</p><div class="sk-tools"><span class="sk-t">ComfyUI</span><span class="sk-t">Krea.ai</span><span class="sk-t">Midjourney</span></div></div>
+    <div class="sk rv"><span class="sk-num">/ 04</span><h3 class="sk-n">Tracking & Analytics</h3><p class="sk-d">Full pixel implementation, custom event tracking, and conversion measurement across all major platforms.</p><div class="sk-tools"><span class="sk-t">Google Tag Manager</span><span class="sk-t">Meta Pixel</span><span class="sk-t">GA4</span></div></div>
+    <div class="sk rv d1"><span class="sk-num">/ 05</span><h3 class="sk-n">E-commerce Strategy</h3><p class="sk-d">Funnel architecture, pricing, customer journey mapping, and CRO — built entirely from real operator experience.</p><div class="sk-tools"><span class="sk-t">Funnel Design</span><span class="sk-t">CRO</span><span class="sk-t">Brand Strategy</span></div></div>
+    <div class="sk rv d2"><span class="sk-num">/ 06</span><h3 class="sk-n">Automation & AI Ops</h3><p class="sk-d">AI-powered workflows for content production, customer ops, and operational efficiency.</p><div class="sk-tools"><span class="sk-t">n8n</span><span class="sk-t">Make</span><span class="sk-t">Claude AI</span></div></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="sec" id="about">
+  <div class="sec-hd rv"><div><p class="sec-tag">Background</p><h2 class="sec-h">About</h2></div></div>
+  <div class="about-g">
+    <div class="rv">
+      <p class="ap">I'm an e-commerce operator who builds and runs brands from the inside out — strategy, tech, ads, and content under one roof.</p>
+      <p class="ap">Management Engineering graduate with 1+ year running IKIVENTI's full digital operation. Built every part of the stack from scratch: custom WooCommerce sites, Meta campaigns, AI product photography, full tracking infrastructure.</p>
+      <p class="ap">I don't just manage — I execute. Every result has been earned through iteration, not theory.</p>
+      <div class="ameta">
+        <div class="am"><p class="aml">Education</p><p class="amv">Management Engineering<br>91/110 — 2024</p></div>
+        <div class="am"><p class="aml">Based</p><p class="amv">Italy<br>Open to relocation</p></div>
+        <div class="am"><p class="aml">Focus</p><p class="amv">E-commerce<br>& Paid Media</p></div>
+        <div class="am"><p class="aml">Languages</p><p class="amv">Italian (native)<br>English (professional)</p></div>
+      </div>
+    </div>
+    <div class="rv d1">
+      <div class="pbox">
+        <img src="photo.png" alt="Lorenzo Federoni">
+      </div>
+      <div class="cs">
+        <p class="csl">IKIVENTI · Meta Ads — Case Study</p>
+        <div class="cs-row">
+          <div><p class="cs-b">€12</p><p style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.1em;color:var(--tm);margin-top:5px">BEFORE</p></div>
+          <span class="cs-arr">→</span>
+          <div><p class="cs-a">€2.5</p><p style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.1em;color:var(--acc2);margin-top:5px">AFTER</p></div>
+        </div>
+        <div class="bar-w"><div class="bar"></div></div>
+        <p class="cs-pct">79% REDUCTION IN COST PER LEAD</p>
+        <div class="cs-mini">
+          <div><p class="cs-mn">70</p><p class="cs-ml">Leads</p></div>
+          <div><p class="cs-mn">137k</p><p class="cs-ml">Reach</p></div>
+          <div><p class="cs-mn">1.34%</p><p class="cs-ml">CTR</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<div class="ct" id="contact">
+  <p class="ct-tag rv">Get in touch</p>
+  <h2 class="ct-h rv">Let's build<br>something <em>great</em></h2>
+  <p class="ct-sub rv">E-commerce · Meta Ads · AI Content · Web Dev</p>
+  <a href="mailto:hello@lorenzofederoni.com" class="btn rv"><span>Get in touch ↗</span></a>
+</div>
+
+<footer>
+  <p class="fc">© 2026 Lorenzo Federoni</p>
+  <div class="fl">
+    <a href="https://ikiventi.com" target="_blank">IKIVENTI</a>
+    <a href="https://21studio.io" target="_blank">21STUDIO</a>
+    <a href="https://linkedin.com/in/lorenzofederoni" target="_blank">LinkedIn</a>
+  </div>
+</footer>
+
+<script>
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-r');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function l(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(l)})();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('h'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('h'));
+});
+
+// Nav
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('s',scrollY>60));
+
+// Reveal
+const obs=new IntersectionObserver(e=>e.forEach(i=>{if(i.isIntersecting)i.target.classList.add('on')}),{threshold:.08});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+
+// Hero parallax
+const hg=document.querySelector('.hero-right');
+window.addEventListener('scroll',()=>{if(hg)hg.style.transform=`translateY(${scrollY*.12}px)`},{passive:true});
+</script>
+</body>
+</html>

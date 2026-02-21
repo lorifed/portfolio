@@ -310,11 +310,11 @@ footer{
     </p>
     <div class="hero-links">
       <a href="#projects" class="btn-primary">View my work</a>
-      <a href="mailto:hello@lorenzofederoni.com" class="btn-secondary">Get in touch</a>
+      <a href="/cdn-cgi/l/email-protection#eb838e878784ab8784998e8591848d8e8f8e99848582c5888486" class="btn-secondary">Get in touch</a>
     </div>
   </div>
   <div class="hero-right">
-    <img class="hero-photo" src="photo.png" alt="Lorenzo Federoni">
+    <img class="hero-photo" src="photo.PNG" alt="Lorenzo Federoni">
     <div class="hero-overlay"></div>
   </div>
 </section>
@@ -402,7 +402,7 @@ footer{
 <section class="contact" id="contact">
   <p class="ct-label rv">Contact</p>
   <h2 class="ct-h rv">Let's work<br><em>together</em></h2>
-  <a href="mailto:hello@lorenzofederoni.com" class="ct-btn rv">Say hello ↗</a>
+  <a href="/cdn-cgi/l/email-protection#650d0009090a25090a17000b1f0a03000100170a0b0c4b060a08" class="ct-btn rv">Say hello ↗</a>
 </section>
 
 <footer>
@@ -414,7 +414,7 @@ footer{
   </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // Cursor
 const cur=document.getElementById('cur'),ring=document.getElementById('cur-r');
 let mx=0,my=0,rx=0,ry=0;
@@ -429,11 +429,4 @@ document.querySelectorAll('a,button').forEach(el=>{
 const obs=new IntersectionObserver(e=>e.forEach(i=>{if(i.isIntersecting)i.target.classList.add('on')}),{threshold:.08});
 document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
 
-// Hero parallax subtle
-window.addEventListener('scroll',()=>{
-  const hp=document.querySelector('.hero-right');
-  if(hp)hp.style.transform=`translateY(${scrollY*.08}px)`;
-},{passive:true});
-</script>
-</body>
-</html>
+// Hero paral
